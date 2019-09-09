@@ -1,0 +1,17 @@
+tensorflow-gpu==1.14.0
+Keras==2.2.5
+Click==7.0
+hyperas==0.4.1
+numpy==1.16.4
+
+freezegun==0.3.12
+isort==4.3.21
+jsonschema==3.0.1
+mypy==0.720
+parameterized==0.7.0
+pytest-asyncio
+pytest-codestyle
+pytest-docstyle
+pytest-isort
+pytest-mypy==0.3.3
+pytest==4.4.0
