@@ -18,3 +18,10 @@ test-inner:
 
 test: build
 	sudo docker run --gpus \"device=$(GPU_DEVICE)\"  --rm $(TAG) make test-inner
+
+example: build
+	sudo docker run --gpus \"device=0\" --rm $(TAG) python ./main.py \
+		supervised \
+		./samples/en_ja/input \
+		--validate ./samples/en_ja/validate \
+		--verbose --maxlen 20 --epochs 20 --lr 0.1

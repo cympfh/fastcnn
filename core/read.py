@@ -16,7 +16,13 @@ def read(path: str, label_suffix: str = '__label__') -> Dataset:
     # read samples
     samples: List[Sample] = []
     for line in open(path, 'r'):
-        fs = line.strip().replace('\t', ' ').split(' ')
+        line = line.strip()
+
+        # ignore line
+        if line == '' or line[0] == '#':
+            continue
+
+        fs = line.replace('\t', ' ').split(' ')
         labels: List[str] = []
         data = ''
         for i, f in enumerate(fs):
@@ -24,6 +30,8 @@ def read(path: str, label_suffix: str = '__label__') -> Dataset:
                 labels.append(f)
             else:
                 data = ' '.join(fs[i:])
+        if len(labels) == 0:
+            continue
         samples.append(Sample(labels, data))
 
     # label set
