@@ -8,23 +8,23 @@
 
 ## Usage
 
-You can run with docker (the latest docker can use GPU in default).
+We prepare `Dockerfile` and `bin/fastcnn`.
+I recommend this style rather than directly running.
+
+If you need `sudo` privilege to run docker, please use properly.
 
 ```bash
-make build
-make example
-```
+make build  # build docker image
+export PATH=$PWD/bin:$PATH  # add ./bin/fastcnn
 
-Or you can run directly
+fastcnn --help
 
-```bash
-python ./main.py \
-    supervised \
+# toy sample
+fastcnn supervised \
     ./samples/en_ja/input \
     --validate ./samples/en_ja/validate \
     --verbose --maxlen 20 --epochs 20 --lr 0.1
 ```
-
 
 ## TODO
 
