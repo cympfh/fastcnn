@@ -28,7 +28,10 @@ fastcnn supervised \
 
 ## TODO
 
-- [x] binary classification
-- [ ] categorical classification
-- [ ] multi-label classification
-- [ ] improvement models
+- [ ] supervised command
+    - [x] binary classification
+    - [x] categorical classification
+    - [ ] multi-label classification
+    - [ ] improvement models
+- [ ] predict command
+- [ ] test command

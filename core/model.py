@@ -9,6 +9,7 @@ def make_model(dataset: Dataset,
                verbose: bool = False) -> models.Model:
 
     voc_size = len(dataset.chars) + 4
+    num_labels = len(dataset.labels)
 
     def make_model_binary():
         model = models.Sequential()
@@ -22,10 +23,18 @@ def make_model(dataset: Dataset,
         return model
 
     def make_model_classify_single():
-        pass
+        model = models.Sequential()
+        model.add(layers.Embedding(voc_size, 64, input_length=maxlen))
+        model.add(layers.Conv1D(100, 5))
+        model.add(layers.MaxPool1D(16))
+        model.add(layers.Flatten())
+        model.add(layers.Dense(num_labels, activation='softmax'))
+        opt = optimizers.SGD(lr=lr)
+        model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=['acc'])
+        return model
 
     def make_model_classify_multiple():
-        pass
+        raise NotImplementedError
 
     if dataset.task == Task.binary:
         model = make_model_binary()

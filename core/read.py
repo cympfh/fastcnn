@@ -1,6 +1,6 @@
 from typing import List, Set
 
-from core.entity import Dataset, Sample, Task, Index
+from core.entity import Dataset, Index, Sample, Task
 
 
 def make_vocabulary(samples: List[Sample]) -> Index:

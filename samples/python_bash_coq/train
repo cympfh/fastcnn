@@ -1,0 +1,235 @@
+# https://github.com/cympfh/coq-etude/blob/master/misc/nat_sum.v
+__label__coq - (* Goal 0 < 2 *)
+__label__coq - by exists 0.
+__label__coq - move => n.
+__label__coq - rewrite [(2 * n)%coq_nat] mul2n.
+__label__coq Definition sum n := n * (n + 1) / 2.
+__label__coq Fixpoint sum_naiive n :=
+__label__coq Lemma even_add_even : forall n m,
+__label__coq Lemma even_div_2 : forall n, n = (n + n) / 2.
+__label__coq Lemma it_is_even : forall m, Nat.Even (m + m * m).
+__label__coq Nat.Even n -> Nat.Even m -> n / 2 + m / 2 = (n + m) / 2.
+__label__coq Proof.
+__label__coq Qed.
+__label__coq Theorem sum_num : forall n, sum_naiive n = sum n.
+__label__coq apply (Nat.div_unique (n + n) 2 n 0).
+__label__coq by apply it_is_even.
+__label__coq case => x.
+__label__coq case => y.
+__label__coq case.
+__label__coq done.
+__label__coq elim m.
+__label__coq elim n => [//|m H].
+__label__coq end.
+__label__coq exists (m.+1).
+__label__coq exists (n.+1 + x).
+__label__coq match n with
+__label__coq move => m.
+__label__coq move => n m.
+__label__coq move => n.
+__label__coq move => x H.
+__label__coq move => x2.
+__label__coq move => y2.
+__label__coq omega.
+__label__coq replace (x + x + (y + y)) with ((x + y) + (x + y)).
+__label__coq rewrite !addn1.
+__label__coq rewrite !addnA.
+__label__coq rewrite !mulSn.
+__label__coq rewrite !mulnS.
+__label__coq rewrite -! addnn.
+__label__coq rewrite -! even_div_2.
+__label__coq rewrite -!mul2n.
+__label__coq rewrite -[x + x + y] addnA.
+__label__coq rewrite -mul2n.
+__label__coq rewrite -mulnDr.
+__label__coq rewrite 2!addnA.
+__label__coq rewrite H.
+__label__coq rewrite [(2 * x)%coq_nat] mul2n.
+__label__coq rewrite [(2 * y)%coq_nat] mul2n.
+__label__coq rewrite [(_ + 0)%coq_nat] addn0.
+__label__coq rewrite addnA.
+__label__coq rewrite addnn.
+__label__coq rewrite even_add_even.
+__label__coq rewrite mulSn.
+__label__coq rewrite mulnS.
+__label__coq rewrite x2.
+__label__coq rewrite y2.
+__label__coq rewrite {1} [m.+1] even_div_2.
+__label__coq rewrite {2} [x + y] addnC.
+__label__coq simpl.
+__label__coq unfold sum.
+__label__coq | 0 => 0
+__label__coq | S m => n + sum_naiive m
+
+# https://github.com/cympfh/bin
+__label__bash # exit by C-c
+__label__bash # file check
+__label__bash # get functions
+__label__bash # helpers
+__label__bash # main
+__label__bash # tcast session
+__label__bash (
+__label__bash ) &
+__label__bash CONFIG_FILE=config.sh
+__label__bash DEST_FILE=dest.list
+__label__bash EOM
+__label__bash LAST_TWEET_ID="0"
+__label__bash LAST_TWEET_ID=$( tail -1 $TWS | jq -r '.id' )
+__label__bash LAST_TWEET_ID=$LAST_TWEET_ID
+__label__bash RAW=$(mktemp)
+__label__bash RESPONSE=$?
+__label__bash SESSION_FILE=/tmp/tcast.session
+__label__bash TWEET_ID="$(echo "$data" | jq -r .id)"
+__label__bash TWS=$(mktemp)
+__label__bash cat $DEST_FILE |
+__label__bash cat $RAW |
+__label__bash cat $TWS |
+__label__bash cat <<EOM >$SESSION_FILE
+__label__bash curl -XPOST -H 'Content-Type: application/json' "$url" --data "$data"
+__label__bash data="$1"
+__label__bash data=$2
+__label__bash done
+__label__bash echo "Not found $file"
+__label__bash elif [ $# -eq 2 ]; then
+__label__bash event_type=$1
+__label__bash exit 1
+__label__bash fi
+__label__bash for file in "$CONFIG_FILE" "$DEST_FILE" ; do
+__label__bash get '/1.1/statuses/home_timeline.json?tweet_mode=extended' >$RAW
+__label__bash get() {
+__label__bash get-dms
+__label__bash get-dms() {
+__label__bash get-mentions
+__label__bash get-mentions() {
+__label__bash get-timeline
+__label__bash get-timeline() {
+__label__bash if [ ! -f $file ]; then
+__label__bash if [ "$(cat $RAW | jq -r 'type')" != array ]; then
+__label__bash if [ $# -eq 1 ]; then
+__label__bash if [ $RESPONSE -ne 0 ]; then
+__label__bash if [ -f $SESSION_FILE ]; then
+__label__bash if [[ "${TWEET_ID}" > "${LAST_TWEET_ID}" ]]; then
+__label__bash jq -cM '.[] | {id:.id_str, username:.user.name, screenname:.user.screen_name, icon:.user.profile_image_url, text:.full_text}' |
+__label__bash log "Error: $(cat $RAW)"
+__label__bash log "GET DMs"
+__label__bash log "GET mentions"
+__label__bash log "GET timeline"
+__label__bash log "Not yet implemented"
+__label__bash log "Response from $url is $RESPONSE"
+__label__bash log "Saving Session"
+__label__bash log "Send data: $data"
+__label__bash log "Send to $url"
+__label__bash log "Starting tcast (exit by C-c)"
+__label__bash log() {
+__label__bash printf "\e[32m[$(date)]\e[0m $@\n"
+__label__bash return
+__label__bash rm $RAW
+__label__bash rm -f $RAW $TWS
+__label__bash save-session
+__label__bash save-session() {
+__label__bash sed 's/\\/\\\\/g' |
+__label__bash send thump
+__label__bash send update "$data"
+__label__bash send() {
+__label__bash send-data "{\"event_type\": \"$event_type\", \"data\": $data}"
+__label__bash send-data "{\"event_type\": \"$event_type\"}"
+__label__bash send-data() {
+__label__bash sleep "${TCAST_TIMELINE_INTERVAL:-5}"
+__label__bash sleep "${TCAST_TIMELINE_INTERVAL:-62}"
+__label__bash sleep 1
+__label__bash sleep 30
+__label__bash source $CONFIG_FILE
+__label__bash source $SESSION_FILE
+__label__bash tac > $TWS
+__label__bash trap "exit" SIGINT SIGTERM
+__label__bash trap "kill 0" EXIT
+__label__bash tw-cd $TCAST_TWITTER_USERNAME
+__label__bash tw-lock
+__label__bash tw-lock -u
+__label__bash twurl "$1"
+__label__bash wait
+__label__bash while :; do
+__label__bash while read data; do
+__label__bash while read url; do
+__label__bash }
+
+# https://github.com/cympfh/rotate-MNIST/blob/master/main.py
+__label__python # report loss
+__label__python # testing
+__label__python @click.command()
+__label__python @click.option('--angle-lr', type=float, default=0.1)
+__label__python @click.option('--batch-size', type=int, default=30)
+__label__python @click.option('--epochs', type=int, default=20)
+__label__python @click.option('--learn-angle', type=bool, required=True)
+__label__python VIEW_INTERVAL = 100
+__label__python ])
+__label__python _, labels_pred = torch.max(y_pred.data, 1)
+__label__python acc_loss += loss.item()
+__label__python acc_loss = 0.0
+__label__python c = (labels_pred == labels).squeeze()
+__label__python click.secho(
+__label__python click.secho('', err=True)
+__label__python count_correct += c.sum().item()
+__label__python count_correct = 0
+__label__python count_total += len(c)
+__label__python count_total = 0
+__label__python def main(epochs, batch_size, learn_angle, angle_lr):
+__label__python def pack(sample, learn_angle):
+__label__python else:
+__label__python err=True, nl=False)
+__label__python f"Test Acc: {100.0 * count_correct / count_total :.2f}%",
+__label__python f"\rEpoch {epoch+1}, iteration {i+1}; "
+__label__python f"\rEpoch {epoch+1}; loss: {(running_loss):.3f}; "
+__label__python f"loss: {(running_loss):.3f}; ",
+__label__python for epoch in range(epochs):
+__label__python for i, sample in enumerate(loader_train):
+__label__python for sample in loader_test:
+__label__python from torch.autograd import Variable
+__label__python if __name__ == '__main__':
+__label__python if i % VIEW_INTERVAL == VIEW_INTERVAL - 1:
+__label__python if learn_angle:
+__label__python if torch.cuda.is_available():
+__label__python import click
+__label__python import dataset
+__label__python import model
+__label__python import torch
+__label__python import torch.optim as optim
+__label__python import torchvision
+__label__python import transforms
+__label__python labels = labels[0]
+__label__python loader_test = torch.utils.data.DataLoader(set_test, batch_size=batch_size,
+__label__python loader_train = torch.utils.data.DataLoader(set_train, batch_size=batch_size,
+__label__python loss = model.loss(y_pred, y, angle_lr)
+__label__python loss.backward()
+__label__python main()
+__label__python nn = model.Net(learn_angle)
+__label__python nn.cuda()
+__label__python optimizer = optim.SGD(nn.parameters(), lr=0.001, momentum=0.9)
+__label__python optimizer.step()
+__label__python optimizer.zero_grad()
+__label__python return x, y
+__label__python running_loss = 0
+__label__python running_loss = 0.0
+__label__python running_loss = acc_loss / VIEW_INTERVAL
+__label__python set_test = dataset.MNIST(root='./data', train=False, download=True,
+__label__python set_train = dataset.MNIST(root='./data', train=True, download=True,
+__label__python shuffle=False, num_workers=2)
+__label__python shuffle=True, num_workers=2)
+__label__python transform = torchvision.transforms.Compose([
+__label__python transform=transform)
+__label__python transforms.Identity() if learn_angle else transforms.Free(),
+__label__python transforms.Normalize()
+__label__python transforms.RandomRotation(30),
+__label__python transforms.ToTensor(),
+__label__python x = x.cuda()
+__label__python x, labels = pack(sample, learn_angle)
+__label__python x, y = pack(sample, learn_angle)
+__label__python x, y = sample
+__label__python y = [y_label, y_angle]
+__label__python y = y.cuda()
+__label__python y[1] = y[1].float().reshape((-1, 1)) / 30
+__label__python y_angle = y[1].cuda().float().reshape((-1, 1)) / 30
+__label__python y_label = y[0].cuda()
+__label__python y_pred = nn(Variable(x))
+__label__python y_pred = nn(x)
+__label__python y_pred = y_pred[0]

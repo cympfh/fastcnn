@@ -1,0 +1,130 @@
+# https://github.com/cympfh/coq-etude/blob/master/misc/pigeon_hole.v
+__label__coq - (* y = 0 *)
+__label__coq - (* y = 1 *)
+__label__coq - (* y = n+2 (y >= 2) *)
+__label__coq - (* y = z + 1 *)
+__label__coq - by simpl; left.
+__label__coq - done.
+__label__coq - exact.
+__label__coq - simpl.
+__label__coq Fixpoint summation (xs : list nat) :=
+__label__coq From mathcomp Require Import all_ssreflect.
+__label__coq Import ListNotations.
+__label__coq Lemma gt_Snm : forall n m, S n < m -> n < m.
+__label__coq Lemma lt_SnSm : forall n m, S n < S m -> n < m.
+__label__coq Lemma summation_0 : forall xs,
+__label__coq Lemma summation_1 : forall xs,
+__label__coq Proof.
+__label__coq Qed.
+__label__coq Require Import Nat List Arith Omega ZArith.
+__label__coq Set Implicit Arguments.
+__label__coq Theorem Pigeon_Hole : forall (xs : list nat),
+__label__coq Unset Printing Implicit Defensive.
+__label__coq Unset Strict Implicit.
+__label__coq apply gt_Snm.
+__label__coq apply lt_SnSm.
+__label__coq apply ltn_trans.
+__label__coq by right.
+__label__coq case y.
+__label__coq case z.
+__label__coq case.
+__label__coq done.
+__label__coq elim => [//|y ys H].
+__label__coq end.
+__label__coq exists (n.+2).
+__label__coq exists x.
+__label__coq have: n < n.+1 by rewrite //.
+__label__coq match xs with
+__label__coq move => I J.
+__label__coq move => n m.
+__label__coq move => n.
+__label__coq move => x.
+__label__coq move => xs.
+__label__coq move => z.
+__label__coq move/H.
+__label__coq move/summation_0.
+__label__coq move/summation_1.
+__label__coq rewrite add1n.
+__label__coq simpl.
+__label__coq size (0 :: xs) < summation (0 :: xs) -> size xs < summation xs.
+__label__coq size (1 :: xs) < summation (1 :: xs) -> size xs < summation xs.
+__label__coq size xs < summation xs -> exists x, In x xs /\ x >= 2.
+__label__coq split.
+__label__coq | nil => 0
+__label__coq | x :: xs' => x + summation xs'
+
+# https://github.com/cympfh/mastodon-cli/blob/master/bin/mast
+__label__bash "$URL"
+__label__bash * )
+__label__bash --unlisted )
+__label__bash -H "Authorization: Bearer $(user-token)" \
+__label__bash -d "$DATA" \
+__label__bash -f )
+__label__bash ;;
+__label__bash DATA="$DATA&media_ids[]=$m"
+__label__bash DATA="$DATA&visibility=unlisted"
+__label__bash DATA="status=$MSG"
+__label__bash MEDIA+=( "$(media-upload "$2")" )
+__label__bash MEDIA=()
+__label__bash MSG=
+__label__bash MSG="$1"
+__label__bash MSG="$MSG $1"
+__label__bash MSG=$(cat)
+__label__bash MSG=$(echo "$MSG" | uri-encode)
+__label__bash UNLISTED=0
+__label__bash UNLISTED=1
+__label__bash URL="https://$(server)/api/v1/statuses"
+__label__bash URL="https://$(server)/api/v1/statuses/$1"
+__label__bash URL="https://$(server)/api/v1/statuses/$1/favourite"
+__label__bash URL="https://$(server)/api/v1/statuses/$1/reblog"
+__label__bash URL="https://$(server)/api/v1/statuses/$1/unfavourite"
+__label__bash URL="https://$(server)/api/v1/statuses/$1/unreblog"
+__label__bash case "$1" in
+__label__bash curl -s -XDELETE \
+__label__bash curl -s -XPOST \
+__label__bash done
+__label__bash else
+__label__bash esac
+__label__bash fav() {
+__label__bash fav-rm() {
+__label__bash fi
+__label__bash for m in "${MEDIA[@]}"; do
+__label__bash if [ "$MSG" == "-" ]; then
+__label__bash if [ "_$MSG" == "_" ]; then
+__label__bash if [ $UNLISTED -eq 1 ]; then
+__label__bash reblog() {
+__label__bash reblog-rm() {
+__label__bash shift
+__label__bash shift 2
+__label__bash toot() {
+__label__bash toot-rm() {
+__label__bash while [ "_$1" != "_" ]; do
+__label__bash }
+
+# https://github.com/cympfh/rotate-MNIST/blob/master/model.py
+__label__python a = F.tanh(self.angle(x))
+__label__python class Net(nn.Module):
+__label__python def __init__(self, learn_angle):
+__label__python def forward(self, x):
+__label__python def loss(input, target, lr):
+__label__python else:
+__label__python from torch import nn
+__label__python if learn_angle:
+__label__python if self.angle:
+__label__python if type(target) == list and len(target) == 2:  # when learn_angle=True
+__label__python import torch.nn.functional as F
+__label__python label, angle = target
+__label__python return F.cross_entropy(input, target)
+__label__python return F.cross_entropy(input[0], label) + F.mse_loss(input[1], angle) * lr
+__label__python return y
+__label__python return y, a
+__label__python self.angle = None
+__label__python self.angle = nn.Linear(256, 1)
+__label__python self.conv1 = nn.Conv2d(1, 8, 5, stride=2)
+__label__python self.conv2 = nn.Conv2d(8, 16, 5, stride=2)
+__label__python self.lin = nn.Linear(256, 10)
+__label__python super(Net, self).__init__()
+__label__python x = F.elu(self.conv1(x))
+__label__python x = F.elu(self.conv2(x))
+__label__python x = x.view(-1, 256)
+__label__python y = self.lin(x)

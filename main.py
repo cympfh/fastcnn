@@ -1,8 +1,8 @@
 import click
 
 from core.batch import BatchSequence
-from core.read import read
 from core.model import make_model
+from core.read import read
 
 DEBUG = False
 
