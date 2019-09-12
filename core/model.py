@@ -4,32 +4,42 @@ from core.entity import Dataset, Task
 
 
 def make_model(dataset: Dataset,
+               dim: int,
                maxlen: int,
-               lr: float,
+               kernel_size: int,
+               opt: optimizers.Optimizer,
                verbose: bool = False) -> models.Model:
 
     voc_size = len(dataset.chars) + 4
     num_labels = len(dataset.labels)
+    feature_size = (maxlen - kernel_size + 1) // 2 - 1
+    assert feature_size > 0, "kernel_size is too large, maxlen is too short"
+
+    def make_conv_layers(name: str):
+        """Input -> Conv -> MaxPool -> Conv -> MaxPool -> Flatten"""
+        model = models.Sequential(name=name)
+        model.add(layers.Embedding(voc_size, dim, input_length=maxlen))
+        model.add(layers.Conv1D(dim * 2, kernel_size,
+                                activation='relu'))
+        model.add(layers.MaxPool1D(2))
+        model.add(layers.Conv1D(dim * 2, 2,
+                                activation='relu'))
+        model.add(layers.MaxPool1D(feature_size))
+        model.add(layers.Flatten())
+        model.add(layers.GaussianNoise(0.1 / dim))
+        model.add(layers.Dropout(0.5))
+        model.add(layers.Dense(dim))
+        return model
 
     def make_model_binary():
-        model = models.Sequential()
-        model.add(layers.Embedding(voc_size, 64, input_length=maxlen))
-        model.add(layers.Conv1D(100, 5))
-        model.add(layers.MaxPool1D(16))
-        model.add(layers.Flatten())
+        model = make_conv_layers('binary')
         model.add(layers.Dense(1, activation='sigmoid'))
-        opt = optimizers.SGD(lr=lr)
         model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['acc'])
         return model
 
     def make_model_classify_single():
-        model = models.Sequential()
-        model.add(layers.Embedding(voc_size, 64, input_length=maxlen))
-        model.add(layers.Conv1D(100, 5))
-        model.add(layers.MaxPool1D(16))
-        model.add(layers.Flatten())
+        model = make_conv_layers('classify_single')
         model.add(layers.Dense(num_labels, activation='softmax'))
-        opt = optimizers.SGD(lr=lr)
         model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=['acc'])
         return model
 

@@ -1,5 +1,8 @@
+from typing import Optional
+
 import click
 
+from core.optimizer import make_optimizer
 from core.batch import BatchSequence
 from core.model import make_model
 from core.read import read
@@ -23,8 +26,18 @@ def cli(debug):
 @click.option('--batch-size', type=int, default=100, help='size of a batch', show_default=True)
 @click.option('--maxlen', type=int, default=100,
               help='The max length (chars) of a sentence', show_default=True)
-@click.option('--lr', type=float, default=0.01,
-              help='lr of SGD', show_default=True)
+@click.option('--kernel-size', type=int, default=5,
+              help='size of a kernel (char window)', show_default=True)
+@click.option('--opt', type=click.Choice(['sgd', 'adagrad', 'adam', 'adamax', 'nadam']),
+              default='sgd',
+              help='optimizer', show_default=True)
+@click.option('--lr', type=float, default=None,
+              help='learning rate (default value is selected for each optimizers)',
+              show_default=True)
+@click.option('--clip-norm', type=float, default=1.0,
+              help='clip norm of optimizers', show_default=True)
+@click.option('--dim', type=int, default=100,
+              help='size of sentence vectors', show_default=True)
 def supervised(input: click.Path,
                validate: click.Path,
                output: str,
@@ -32,8 +45,21 @@ def supervised(input: click.Path,
                epochs: int,
                batch_size: int,
                maxlen: int,
-               lr: float,
+               kernel_size: int,
+               opt: str,
+               lr: Optional[float],
+               clip_norm: float,
+               dim: int,
                ):
+
+    assert epochs > 0
+    assert batch_size > 0
+    assert maxlen > 2
+    assert kernel_size > 1
+    assert lr is None or lr > 0.0
+    assert clip_norm > 0.0
+    assert dim > 0
+
     dataset = read(input)
     click.echo(f"{dataset.task}", err=True)
     click.echo(f"#labels={len(dataset.labels)}, "
@@ -44,7 +70,9 @@ def supervised(input: click.Path,
         dataset_validate = read(validate)
         click.echo(f"validation with {len(dataset_validate.samples)} samples")
 
-    model = make_model(dataset, maxlen, verbose=verbose, lr=lr)
+    optimizer = make_optimizer(opt, lr, clip_norm)
+    model = make_model(dataset, dim, maxlen, kernel_size, optimizer, verbose=verbose)
+
     model.fit_generator(
         BatchSequence(dataset, batch_size, maxlen),
         validation_data=(None if validate is None

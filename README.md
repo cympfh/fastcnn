@@ -1,4 +1,4 @@
-# fastcnn
+# [WIP] fastcnn
 
 `fastcnn` is another text classification tool (inspired by `fasttext`).
 
@@ -19,11 +19,17 @@ export PATH=$PWD/bin:$PATH  # add ./bin/fastcnn
 
 fastcnn --help
 
-# toy sample
+# sample: binary classification
 fastcnn supervised \
     ./samples/en_ja/input \
     --validate ./samples/en_ja/validate \
-    --verbose --maxlen 20 --epochs 20 --lr 0.1
+    --verbose --maxlen 20 --epochs 10 --lr 0.2
+
+# sample: categorical (3 classes) classification
+fastcnn supervised \
+    ./samples/python_bash_coq/train \
+    --validate ./samples/python_bash_coq/valid \
+    --verbose --epochs 300 --maxlen 10 --dim 8 --kernel-size 3 --lr 0.3 --clip-norm 2.0
 ```
 
 ## TODO
