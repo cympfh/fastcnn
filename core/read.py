@@ -11,7 +11,11 @@ def make_vocabulary(samples: List[Sample]) -> Index:
     return vocab
 
 
-def read(path: str, label_suffix: str = '__label__') -> Dataset:
+def read(path: str,
+         label_suffix: str = '__label__',
+         remove_no_labels: bool = False,
+         ) -> Dataset:
+    """Read dataset"""
 
     # read samples
     samples: List[Sample] = []
@@ -30,7 +34,8 @@ def read(path: str, label_suffix: str = '__label__') -> Dataset:
                 labels.append(f)
             else:
                 data = ' '.join(fs[i:])
-        if len(labels) == 0:
+                break
+        if remove_no_labels and len(labels) == 0:
             continue
         samples.append(Sample(labels, data))
 
