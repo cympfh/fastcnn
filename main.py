@@ -202,9 +202,57 @@ def predict(model_file: click.Path,
 
 
 @cli.command()
-def predict_prob():
+@click.argument('model-file', type=str)
+@click.argument('test-data', type=click.Path(exists=True))
+@click.option('-k', type=int, default=1,
+              help='predict top k labels', show_default=True)
+@click.option('-t', type=float, default=0.0,
+              help='probability threshold', show_default=True)
+@click.option('--batch-size', type=int, default=100, help='size of a batch', show_default=True)
+@click.option('--stat', is_flag=True, default=False, show_default=True)
+@click.option('--show-data', is_flag=True, default=False, show_default=True)
+def predict_prob(model_file: click.Path,
+                 test_data: click.Path,
+                 k: int,
+                 t: float,
+                 batch_size: int,
+                 stat: bool,
+                 show_data: bool,
+                 ):
     """predict most likely labels with probabilities"""
-    raise NotImplementedError
+    metadata_file = f"{model_file}.meta.yml"
+    metadata = Metadata.load(metadata_file)
+    # load model
+    model = load_model(f"{model_file}.h5")
+    # test data
+    dataset_test = read(test_data)
+    dataset_test = Dataset(
+        metadata.task,
+        metadata.labels,
+        metadata.chars,
+        dataset_test.samples,
+    )
+
+    if stat:
+        utils.stat(dataset_test)
+
+    def float4(x):
+        return round(float(x) * 10000) / 10000
+
+    # prediction
+    pred = model.predict_generator(
+            BatchSequence(dataset_test, batch_size, metadata.params['maxlen']),
+            workers=1,
+            use_multiprocessing=True)
+    indices = numpy.argsort(-pred)[:, :k]
+    for i, ind in enumerate(indices):
+        pred_labels = [metadata.labels[j] for j in ind if pred[i, j] > t]
+        pred_probs = [float4(pred[i, j]) for j in ind if pred[i, j] > t]
+        pred_msg = ' '.join(str(x) for pair in zip(pred_labels, pred_probs) for x in pair)
+        if show_data:
+            print(pred_msg, dataset_test.samples[i].data)
+        else:
+            print(pred_msg)
 
 
 @cli.command()
