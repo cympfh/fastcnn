@@ -1,0 +1,7 @@
+__label__a aa.
+__label__b bbb.
+__label__c c.
+__label__a __label__b abasabbb.
+__label__b __label__c bbcbcbc.
+__label__c __label__a aaccca.
+__label__a __label__b __label__c abcabc.

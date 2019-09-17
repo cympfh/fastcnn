@@ -44,7 +44,10 @@ def make_model(dataset: Dataset,
         return model
 
     def make_model_classify_multiple():
-        raise NotImplementedError
+        model = make_conv_layers('classify_single')
+        model.add(layers.Dense(num_labels, activation='sigmoid'))
+        model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['acc'])
+        return model
 
     if dataset.task == Task.binary:
         model = make_model_binary()
