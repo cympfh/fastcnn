@@ -29,12 +29,13 @@ def cli(debug):
 @click.option('--output', '-o', help='output file path')
 @click.option('--verbose', is_flag=True, default=False, show_default=True)
 @click.option('--stat', is_flag=True, default=False, show_default=True)
-@click.option('--epochs', type=int, default=10, help='number of epochs', show_default=True)
+@click.option('-e', '--epochs', type=int, default=10, help='number of epochs', show_default=True)
 @click.option('--batch-size', type=int, default=100, help='size of a batch', show_default=True)
 @click.option('--dim', type=int, default=100,
               help='size of sentence vectors', show_default=True)
-@click.option('--maxlen', type=int, default=100,
-              help='max length (chars) of a sentence', show_default=True)
+@click.option('--maxlen', type=int, default=-1,
+              help='max length (chars) of a sentence; If -1, it is decided by the maximum in training data',
+              show_default=True)
 @click.option('--kernel-size', type=int, default=5,
               help='size of a kernel (char window)', show_default=True)
 @click.option('--opt', type=click.Choice(['sgd', 'adagrad', 'adam', 'adamax', 'nadam']),
@@ -69,13 +70,16 @@ def supervised(input: click.Path,
 
     assert epochs > 0
     assert batch_size > 0
-    assert maxlen > 2
+    assert maxlen > 2 or maxlen == -1
     assert kernel_size > 1
     assert lr is None or lr > 0.0
     assert clip_norm > 0.0
     assert dim > 0
 
     dataset = read(input, remove_no_labels=True)
+
+    if maxlen < 0:
+        maxlen = max(len(sample.data) for sample in dataset.samples) + 2
 
     metadata = Metadata(
         dataset.task,
