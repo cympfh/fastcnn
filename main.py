@@ -1,17 +1,17 @@
 from typing import Optional
 
 import click
-import cowsay
 import numpy
-from keras.callbacks import EarlyStopping
-from keras.models import load_model
 
-import core.utils as utils
+import cowsay
+from core import utils
 from core.batch import BatchSequence
 from core.entity import Dataset, Metadata, Task
 from core.model import make_model
 from core.optimizer import make_optimizer
 from core.read import read
+from keras.callbacks import EarlyStopping
+from keras.models import Model, load_model
 
 DEBUG = False
 
@@ -176,6 +176,7 @@ def predict(model_file: click.Path,
             show_data: bool,
             ):
     """predict most likely labels"""
+    # metadata
     metadata_file = f"{model_file}.meta.yml"
     metadata = Metadata.load(metadata_file)
     # load model
@@ -229,6 +230,7 @@ def predict_prob(model_file: click.Path,
                  show_data: bool,
                  ):
     """predict most likely labels with probabilities"""
+    # metadata
     metadata_file = f"{model_file}.meta.yml"
     metadata = Metadata.load(metadata_file)
     # load model
@@ -245,9 +247,6 @@ def predict_prob(model_file: click.Path,
     if stat:
         utils.stat(dataset_test)
 
-    def float4(x):
-        return round(float(x) * 10000) / 10000
-
     # prediction
     pred = model.predict_generator(
             BatchSequence(dataset_test, batch_size, metadata.params['maxlen']),
@@ -257,11 +256,11 @@ def predict_prob(model_file: click.Path,
     for i, ind in enumerate(indices):
         if metadata.task == Task.binary:
             pred_label = metadata.labels[0 if pred[i, 0] < 0.5 else 1]
-            pred_prob = float4(max(pred[i, 0], 1.0 - pred[i, 0]))
+            pred_prob = utils.float4(max(pred[i, 0], 1.0 - pred[i, 0]))
             pred_msg = f"{pred_label} {pred_prob}"
         else:
             pred_labels = [metadata.labels[j] for j in ind if pred[i, j] > t]
-            pred_probs = [float4(pred[i, j]) for j in ind if pred[i, j] > t]
+            pred_probs = [utils.float4(pred[i, j]) for j in ind if pred[i, j] > t]
             pred_msg = ' '.join(str(x) for pair in zip(pred_labels, pred_probs) for x in pair)
         if show_data:
             print(pred_msg, dataset_test.samples[i].data)
@@ -270,9 +269,31 @@ def predict_prob(model_file: click.Path,
 
 
 @cli.command()
-def print_sentence_vectors():
+@click.argument('model-file', type=str)
+@click.argument('data-file', type=click.Path(exists=True))
+@click.option('--batch-size', type=int, default=100, help='size of a batch', show_default=True)
+def print_sentence_vectors(
+        model_file: str,
+        data_file: str,
+        batch_size: int,
+        ):
     """print sentence vectors given a trained model"""
-    raise NotImplementedError
+    # metadata
+    metadata_file = f"{model_file}.meta.yml"
+    metadata = Metadata.load(metadata_file)
+    # load model
+    model = load_model(f"{model_file}.h5")
+    feature_model = Model(inputs=model.input,
+                          outputs=model.get_layer('dense_1').output)
+    # data
+    dataset = read(data_file)
+    pred = feature_model.predict_generator(
+            BatchSequence(dataset, batch_size, metadata.params['maxlen']),
+            workers=1,
+            use_multiprocessing=True)
+
+    for v in pred:
+        print(' '.join(str(utils.float4(x)) for x in v))
 
 
 if __name__ == '__main__':

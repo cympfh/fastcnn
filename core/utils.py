@@ -21,3 +21,7 @@ def stat(dataset: Dataset) -> str:
     ret += f"- avg : {sum(lens) / len(lens)}\n"
 
     return ret.strip()
+
+
+def float4(x):
+    return round(float(x) * 10000) / 10000
