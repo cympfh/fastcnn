@@ -8,7 +8,7 @@ from keras.models import load_model
 
 import core.utils as utils
 from core.batch import BatchSequence
-from core.entity import Dataset, Metadata
+from core.entity import Dataset, Metadata, Task
 from core.model import make_model
 from core.optimizer import make_optimizer
 from core.read import read
@@ -160,7 +160,8 @@ def test_label():
 @click.argument('model-file', type=str)
 @click.argument('test-data', type=click.Path(exists=True))
 @click.option('-k', type=int, default=1,
-              help='predict top k labels', show_default=True)
+              help='predict top k labels (for class classification)',
+              show_default=True)
 @click.option('-t', type=float, default=0.0,
               help='probability threshold', show_default=True)
 @click.option('--batch-size', type=int, default=100, help='size of a batch', show_default=True)
@@ -196,9 +197,13 @@ def predict(model_file: click.Path,
             BatchSequence(dataset_test, batch_size, metadata.params['maxlen']),
             workers=1,
             use_multiprocessing=True)
+
     indices = numpy.argsort(-pred)[:, :k]
     for i, ind in enumerate(indices):
-        pred_labels = ' '.join(metadata.labels[j] for j in ind if pred[i, j] > t)
+        if metadata.task == Task.binary:
+            pred_labels = metadata.labels[0 if pred[i, 0] < 0.5 else 1]
+        else:
+            pred_labels = ' '.join(metadata.labels[j] for j in ind if pred[i, j] > t)
         if show_data:
             print(pred_labels, dataset_test.samples[i].data)
         else:
@@ -250,9 +255,14 @@ def predict_prob(model_file: click.Path,
             use_multiprocessing=True)
     indices = numpy.argsort(-pred)[:, :k]
     for i, ind in enumerate(indices):
-        pred_labels = [metadata.labels[j] for j in ind if pred[i, j] > t]
-        pred_probs = [float4(pred[i, j]) for j in ind if pred[i, j] > t]
-        pred_msg = ' '.join(str(x) for pair in zip(pred_labels, pred_probs) for x in pair)
+        if metadata.task == Task.binary:
+            pred_label = metadata.labels[0 if pred[i, 0] < 0.5 else 1]
+            pred_prob = float4(max(pred[i, 0], 1.0 - pred[i, 0]))
+            pred_msg = f"{pred_label} {pred_prob}"
+        else:
+            pred_labels = [metadata.labels[j] for j in ind if pred[i, j] > t]
+            pred_probs = [float4(pred[i, j]) for j in ind if pred[i, j] > t]
+            pred_msg = ' '.join(str(x) for pair in zip(pred_labels, pred_probs) for x in pair)
         if show_data:
             print(pred_msg, dataset_test.samples[i].data)
         else:
