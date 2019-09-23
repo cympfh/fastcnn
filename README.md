@@ -39,8 +39,8 @@ fastcnn supervised \
     - [x] categorical classification
     - [x] multi-label classification
 - [x] predict command
-- [ ] test command
-    - [ ] Acc
-    - [ ] F1/Recall/Precision
+- [x] test command
+    - [x] Acc
+    - [x] F1/Recall/Precision
 - more features
     - [ ] improvement models
