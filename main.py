@@ -34,7 +34,7 @@ def cli(debug):
 @click.option('--dim', type=int, default=100,
               help='size of sentence vectors', show_default=True)
 @click.option('--maxlen', type=int, default=-1,
-              help='max length (chars) of a sentence; If -1, it is decided by the maximum in training data',
+              help='max length (chars) of a sentence; If -1, it is estimated',
               show_default=True)
 @click.option('--kernel-size', type=int, default=5,
               help='size of a kernel (char window)', show_default=True)
@@ -44,12 +44,11 @@ def cli(debug):
 @click.option('--lr', type=float, default=None,
               help='learning rate (default value is selected for each optimizers)',
               show_default=True)
-@click.option('--clip-norm', type=float, default=1.0,
+@click.option('--clip-norm', type=float, default=2.0,
               help='clip norm of optimizers', show_default=True)
-@click.option('--stop-window', type=int, default=4,
-              help='number of epochs of stop window for early-stopping', show_default=True)
-@click.option('--dis-es', is_flag=True, default=False,
-              help='disable early-stopping', show_default=True)
+@click.option('--stop-window', type=int, default=-1,
+              help='number of epochs of stop window for early-stopping; If -1, disabled',
+              show_default=True)
 def supervised(input: click.Path,
                validate: click.Path,
                output: str,
@@ -64,7 +63,6 @@ def supervised(input: click.Path,
                lr: Optional[float],
                clip_norm: float,
                stop_window: int,
-               dis_es: bool,
                ):
     """train a supervised classifier"""
 
@@ -125,7 +123,7 @@ Task: {dataset.task.name}, #labels={len(dataset.labels)}, #chars={len(dataset.ch
     model = make_model(dataset, dim, maxlen, kernel_size, optimizer, verbose=verbose)
 
     callbacks = []
-    if validate and not dis_es:
+    if validate and stop_window > 0:
         callbacks += [EarlyStopping(monitor='val_acc', patience=stop_window)]
 
     model.fit_generator(
@@ -135,7 +133,7 @@ Task: {dataset.task.name}, #labels={len(dataset.labels)}, #chars={len(dataset.ch
         shuffle=True,
         callbacks=callbacks,
         epochs=epochs,
-        verbose=2 if verbose else 0,
+        verbose=2,
         workers=1,
         use_multiprocessing=True)
 
