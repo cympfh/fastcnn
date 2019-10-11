@@ -1,4 +1,4 @@
-FROM cympfh/python-cuda:3.6.9-9.0
+FROM cympfh/python-cuda:3.6.9-9
 
 WORKDIR /app
 COPY requirements.txt .

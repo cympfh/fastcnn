@@ -1,10 +1,10 @@
-# [WIP] fastcnn
+# fastcnn
 
 `fastcnn` is another text classification tool (inspired by `fasttext`).
 
 - using char-level CNN to classify
 - not yet `fast`
-- implemented with `Keras`
+- implemented with `tensorflow.keras`
 
 ## Usage
 
@@ -35,15 +35,3 @@ fastcnn supervised \
     --lr 0.3
 ```
 
-## TODO
-
-- [x] supervised command
-    - [x] binary classification
-    - [x] categorical classification
-    - [x] multi-label classification
-- [x] predict command
-- [x] test command
-    - [x] Acc
-    - [x] F1/Recall/Precision
-- more features
-    - [ ] improvement models

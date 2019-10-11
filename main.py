@@ -10,8 +10,8 @@ from core.entity import Dataset, Metadata, Task
 from core.model import make_model
 from core.optimizer import make_optimizer
 from core.read import read
-from keras.callbacks import EarlyStopping
-from keras.models import Model, load_model
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.models import Model, load_model
 
 DEBUG = False
 

@@ -1,14 +1,14 @@
 import math
 from typing import Tuple
 
-import keras.utils
 import numpy
+from tensorflow.keras import utils
 
 from core.entity import Dataset, Task
 from core.text import vectorize
 
 
-class BatchSequence(keras.utils.Sequence):
+class BatchSequence(utils.Sequence):
 
     def __init__(self, dataset: Dataset, batch_size: int, maxlen: int):
         self.dataset = dataset
