@@ -44,7 +44,7 @@ def make_model(dataset: Dataset,
         return model
 
     def make_model_classify_multiple():
-        model = make_conv_layers('classify_single')
+        model = make_conv_layers('classify_multiple')
         model.add(layers.Dense(num_labels, activation='sigmoid'))
         model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['acc'])
         return model

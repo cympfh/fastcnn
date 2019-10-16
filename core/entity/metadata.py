@@ -30,7 +30,7 @@ class Metadata:
     @classmethod
     def load(cls, file_path: str) -> 'Metadata':
         with open(file_path, 'r') as f:
-            obj = yaml.load(f)
+            obj = yaml.load(f, Loader=yaml.FullLoader)
             return Metadata(
                 Task[obj['task']],
                 Index(obj['labels']),

@@ -8,4 +8,4 @@ gpu-device() {
     fi
 }
 
-sudo docker run --gpus \"device=$(gpu-device)\" -v ${PWD}:/workdir --rm fastcnn python /app/main.py $@
+sudo docker run --gpus \"device=$(gpu-device)\" -v ${PWD}:/workdir -u 1014 --rm fastcnn python /app/main.py $@

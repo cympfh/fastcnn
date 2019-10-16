@@ -98,7 +98,7 @@ def supervised(input: click.Path,
     cowsay.cow(f"Metadata file saved as {metadata_file}")
 
     if validate is not None:
-        dataset_validate = read(validate)
+        dataset_validate = read(validate, remove_no_labels=True)
         dataset_validate = Dataset(
             dataset.task,
             dataset.labels,
