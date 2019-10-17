@@ -1,17 +1,17 @@
 from typing import Optional
 
 import click
-import numpy
-
 import cowsay
+import numpy
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.models import Model
+
 from core import utils
 from core.batch import BatchSequence
 from core.entity import Dataset, Metadata, Task
-from core.model import make_model
+from core.model import load_model, make_model
 from core.optimizer import make_optimizer
 from core.read import read
-from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.models import Model, load_model
 
 DEBUG = False
 
@@ -49,6 +49,8 @@ def cli(debug):
 @click.option('--stop-window', type=int, default=-1,
               help='number of epochs of stop window for early-stopping; If -1, disabled',
               show_default=True)
+@click.option('--label-smoothing', type=float, default=0.0,
+              help='increase values of negative labels')
 def supervised(input: click.Path,
                validate: click.Path,
                output: str,
@@ -63,6 +65,7 @@ def supervised(input: click.Path,
                lr: Optional[float],
                clip_norm: float,
                stop_window: int,
+               label_smoothing: float,
                ):
     """train a supervised classifier"""
 
@@ -127,7 +130,7 @@ Task: {dataset.task.name}, #labels={len(dataset.labels)}, #chars={len(dataset.ch
         callbacks += [EarlyStopping(monitor='val_acc', patience=stop_window)]
 
     model.fit_generator(
-        BatchSequence(dataset, batch_size, maxlen),
+        BatchSequence(dataset, batch_size, maxlen, label_smoothing),
         validation_data=(None if validate is None
                          else BatchSequence(dataset_validate, batch_size, maxlen)),
         shuffle=True,
@@ -166,7 +169,7 @@ def test(
     metadata_file = f"{model_file}.meta.yml"
     metadata = Metadata.load(metadata_file)
     # load model
-    model = load_model(f"{model_file}.h5")
+    model = load_model(model_file)
     # test data
     dataset_test = read(test_data, remove_no_labels=True)
     dataset_test = Dataset(
@@ -259,7 +262,7 @@ def predict(model_file: click.Path,
     metadata_file = f"{model_file}.meta.yml"
     metadata = Metadata.load(metadata_file)
     # load model
-    model = load_model(f"{model_file}.h5")
+    model = load_model(model_file)
     # test data
     dataset_test = read(test_data)
     dataset_test = Dataset(
@@ -313,7 +316,7 @@ def predict_prob(model_file: click.Path,
     metadata_file = f"{model_file}.meta.yml"
     metadata = Metadata.load(metadata_file)
     # load model
-    model = load_model(f"{model_file}.h5")
+    model = load_model(model_file)
     # test data
     dataset_test = read(test_data)
     dataset_test = Dataset(
@@ -361,7 +364,7 @@ def print_sentence_vectors(
     metadata_file = f"{model_file}.meta.yml"
     metadata = Metadata.load(metadata_file)
     # load model
-    model = load_model(f"{model_file}.h5")
+    model = load_model(model_file)
     feature_model = Model(inputs=model.input,
                           outputs=model.get_layer('dense_1').output)
     # data

@@ -10,11 +10,12 @@ from core.text import vectorize
 
 class BatchSequence(utils.Sequence):
 
-    def __init__(self, dataset: Dataset, batch_size: int, maxlen: int):
+    def __init__(self, dataset: Dataset, batch_size: int, maxlen: int, label_smoothing=None):
         self.dataset = dataset
         self.batch_size = batch_size
         self.maxlen = maxlen
         self.label_size = len(dataset.labels)
+        self.label_smoothing = label_smoothing or 0.0
 
     def __len__(self) -> int:
         return math.ceil(len(self.dataset.samples) / self.batch_size)
@@ -41,9 +42,11 @@ class BatchSequence(utils.Sequence):
             Y = numpy.array(Y, dtype='i')
         else:
             minibatch_size = len(range(index_begin, index_end))
-            Y = numpy.zeros((minibatch_size, self.label_size), dtype='f')
+            smoothing = self.label_smoothing / self.label_size
+            Y = numpy.zeros((minibatch_size, self.label_size), dtype='f') + smoothing
             for i in range(index_begin, index_end):
+                m = len(self.dataset.samples[i].labels)
                 for label in self.dataset.samples[i].labels:
                     j = self.dataset.labels.index(label)
-                    Y[i - index_begin, j] = 1.0
+                    Y[i - index_begin, j] = 1.0 / m
         return X, Y

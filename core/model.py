@@ -3,6 +3,10 @@ from tensorflow.keras import layers, models, optimizers
 from core.entity import Dataset, Task
 
 
+def load_model(model_file: str) -> models.Model:
+    return models.load_model(f"{model_file}.h5")
+
+
 def make_model(dataset: Dataset,
                dim: int,
                maxlen: int,
@@ -45,8 +49,8 @@ def make_model(dataset: Dataset,
 
     def make_model_classify_multiple():
         model = make_conv_layers('classify_multiple')
-        model.add(layers.Dense(num_labels, activation='sigmoid'))
-        model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['acc'])
+        model.add(layers.Dense(num_labels, activation='softmax'))
+        model.compile(loss='kullback_leibler_divergence', optimizer=opt)
         return model
 
     if dataset.task == Task.binary:
