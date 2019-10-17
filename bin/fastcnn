@@ -1,8 +1,8 @@
 #!/bin/bash
 
 gpu-device() {
-    if which empty-gpu-devices >/dev/null; then
-        empty-gpu-devices
+    if which empty-gpu-device >/dev/null; then
+        empty-gpu-device
     else
         echo 0
     fi

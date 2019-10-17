@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sudo docker run -v ${PWD}:/workdir -u 1014 --rm fastcnn python /app/main.py $@
