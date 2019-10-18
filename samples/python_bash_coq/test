@@ -1,0 +1,185 @@
+# Coq: https://github.com/cympfh/coq-etude/blob/master/igarashi/class05.v
+__label__coq - discriminate.
+__label__coq - done.
+__label__coq - exact.
+__label__coq Example trans_eq_example :
+__label__coq From mathcomp Require Import all_ssreflect.
+__label__coq Import ListNotations.
+__label__coq Proof.
+__label__coq Qed.
+__label__coq Require Import Arith List Omega ZArith.
+__label__coq S n = S m -> n = m.
+__label__coq Set Implicit Arguments.
+__label__coq Some n = Some m -> n = m.
+__label__coq Theorem S_injective : forall n m,
+__label__coq Theorem S_injective' : forall n m,
+__label__coq Theorem eqb_0_1 : forall n, 0 = n -> n = 0.
+__label__coq Theorem injection_ex1 : forall n m o : nat,
+__label__coq Theorem injection_ex2 : forall n m : nat,
+__label__coq Theorem injection_ex2' : forall n m : nat,
+__label__coq Theorem trans_eq : forall (X : Type) (n m o : X),
+__label__coq Unset Printing Implicit Defensive.
+__label__coq Unset Strict Implicit.
+__label__coq [a;b] = [c;d] -> [c;d] = [e;f] -> [a;b] = [e;f].
+__label__coq [n;m] = [o;o] -> [n] = [m].
+__label__coq [n] = [m] -> n = m.
+__label__coq apply trans_eq with (m := [c;d]).
+__label__coq apply.
+__label__coq assert (H2 : n = (n.+1).-1). {
+__label__coq by simpl.
+__label__coq congruence.
+__label__coq exact.
+__label__coq forall (a b c d e f : nat),
+__label__coq injection H as Hnm.
+__label__coq injection H.
+__label__coq intros H.
+__label__coq intros [|m].
+__label__coq intros n m H.
+__label__coq intros n m.
+__label__coq intros.
+__label__coq n = m -> m = o -> n = o.
+__label__coq rewrite H.
+__label__coq rewrite H0.
+__label__coq rewrite H1.
+__label__coq rewrite H2.
+__label__coq trivial.
+
+# Bash: https://github.com/cympfh/trello-cli/blob/master/bin/trello
+__label__bash API_KEY=${API_KEY}
+__label__bash API_TOKEN=$(echo "$API_TOKEN" | trim)
+__label__bash API_TOKEN=${API_TOKEN}
+__label__bash BOARD_ID=$(
+__label__bash BOARD_ID=$(get-board-id "$USERNAME" "$BOARD_NAME")
+__label__bash BOARD_NAME=
+__label__bash BOARD_NAME="$2"
+__label__bash LIST_ID=$(get-list-id "$USERNAME" "$BOARD_NAME" "$LIST_NAME")
+__label__bash LIST_NAME=
+__label__bash LIST_NAME="$2"
+__label__bash LIST_NAME="$3"
+__label__bash URL="https://trello.com/1/authorize?key=${API_KEY}&name=${APP_NAME}&expiration=never&response_type=token&scope=read,write"
+__label__bash USERNAME="$2"
+__label__bash [ $? -ne 0 ] && exit $?
+__label__bash auth() {
+__label__bash authorizes
+__label__bash board | boards )
+__label__bash browser-open "$URL"
+__label__bash browser-open() {
+__label__bash card | cards )
+__label__bash case "$1" in
+__label__bash cat $CONFIG_PATH
+__label__bash cat <<EOM
+__label__bash cat <<EOM > $CONFIG_PATH
+__label__bash curl -s "https://trello.com/1/boards/${BOARD_ID}/lists?key=${API_KEY}&token=${API_TOKEN}&fields=all"
+__label__bash curl -s "https://trello.com/1/lists/${LIST_ID}/cards?key=${API_KEY}&token=${API_TOKEN}&fields=all"
+__label__bash curl -s "https://trello.com/1/members/${USERNAME}/boards?key=${API_KEY}&token=${API_TOKEN}&fields=all"
+__label__bash done
+__label__bash echo "$BOARD_ID"
+__label__bash echo "$LIST_ID"
+__label__bash echo "---"
+__label__bash echo "Not Found Board:${BOARD_NAME}" >&2
+__label__bash echo "Not Found List:${LIST_NAME}" >&2
+__label__bash echo "SAVED TO $CONFIG_PATH ---"
+__label__bash echo "Unknown command"
+__label__bash echo "Wrong args" >&2
+__label__bash echo -n "token> "
+__label__bash firefox "$1"
+__label__bash get-board "$@"
+__label__bash get-board -u "${USERNAME}" |
+__label__bash get-board() {
+__label__bash get-board-id() {
+__label__bash get-card "$@"
+__label__bash get-card() {
+__label__bash get-list "$@"
+__label__bash get-list -u "$USERNAME" -B "$BOARD_NAME" |
+__label__bash get-list() {
+__label__bash get-list-id() {
+__label__bash gets board names of <username>
+__label__bash gets cards of the list of the board
+__label__bash gets list names of the board
+__label__bash if [ $? -ne 0 -o -z "$LIST_ID" ]; then
+__label__bash if [ -f $CONFIG_PATH ]; then
+__label__bash if [ -z "$BOARD_ID" ]; then
+__label__bash if [ -z "$USERNAME" -o -z "$BOARD_NAME" -o -z "$LIST_NAME" ]; then
+__label__bash if [ -z "$USERNAME" -o -z "$BOARD_NAME" ]; then
+__label__bash if [ -z "$USERNAME" ]; then
+__label__bash if which open >/dev/null; then
+__label__bash jq -r ".[] | if .name == \"$BOARD_NAME\" then .id else empty end" |
+__label__bash jq -r ".[] | if .name == \"$LIST_NAME\" then .id else empty end" |
+__label__bash list | lists )
+__label__bash open "$1"
+__label__bash prints this
+__label__bash read API_TOKEN
+__label__bash restore-config
+__label__bash restore-config() {
+__label__bash save-config
+__label__bash save-config() {
+__label__bash sed 's/^ *//g; s/  *$//g'
+__label__bash shift
+__label__bash shift 2
+__label__bash source $CONFIG_PATH
+__label__bash trello auth
+__label__bash trello board -u <username>
+__label__bash trello card -u <username> -B <board-name> -L <list-name>
+__label__bash trello help
+__label__bash trello list -u <username> -B <board-name>
+__label__bash while [ $# -gt 0 ]; do
+
+
+# Python: https://github.com/cympfh/rotate-MNIST/blob/master/main.py
+__label__python err=True, nl=False)
+__label__python f"Test Acc: {100.0 * count_correct / count_total :.2f}%",
+__label__python main()
+__label__python VIEW_INTERVAL = 100
+__label__python ])
+__label__python _, labels_pred = torch.max(y_pred.data, 1)
+__label__python acc_loss += loss.item()
+__label__python acc_loss = 0.0
+__label__python acc_loss = 0.0
+__label__python c = (labels_pred == labels).squeeze()
+__label__python click.secho(
+__label__python click.secho(
+__label__python click.secho('', err=True)
+__label__python count_correct += c.sum().item()
+__label__python count_correct = 0
+__label__python count_total += len(c)
+__label__python count_total = 0
+__label__python err=True, nl=False)
+__label__python f"\rEpoch {epoch+1}, iteration {i+1}; "
+__label__python f"\rEpoch {epoch+1}; loss: {(running_loss):.3f}; "
+__label__python f"loss: {(running_loss):.3f}; ",
+__label__python for epoch in range(epochs):
+__label__python for i, sample in enumerate(loader_train):
+__label__python for sample in loader_test:
+__label__python if __name__ == '__main__':
+__label__python if i % VIEW_INTERVAL == VIEW_INTERVAL - 1:
+__label__python if learn_angle:
+__label__python if torch.cuda.is_available():
+__label__python ision.transforms.Compose([
+__label__python labels = labels[0]
+__label__python loader_test = torch.utils.data.DataLoader(set_test, batch_size=batch_size,
+__label__python loader_train = torch.utils.data.DataLoader(set_train, batch_size=batch_size,
+__label__python loss = model.loss(y_pred, y, angle_lr)
+__label__python loss.backward()
+__label__python nn = model.Net(learn_angle)
+__label__python nn.cuda()
+__label__python optimizer = optim.SGD(nn.parameters(), lr=0.001, momentum=0.9)
+__label__python optimizer.step()
+__label__python optimizer.zero_grad()
+__label__python running_loss = 0
+__label__python running_loss = 0.0
+__label__python running_loss = acc_loss / VIEW_INTERVAL
+__label__python set_test = dataset.MNIST(root='./data', train=False, download=True,
+__label__python set_train = dataset.MNIST(root='./data', train=True, download=True,
+__label__python shuffle=False, num_workers=2)
+__label__python shuffle=True, num_workers=2)
+__label__python transform=transform)
+__label__python transform=transform)
+__label__python transforms.Identity() if learn_angle else transforms.Free(),
+__label__python transforms.Normalize()
+__label__python transforms.RandomRotation(30),
+__label__python transforms.ToTensor(),
+__label__python x, labels = pack(sample, learn_angle)
+__label__python x, y = pack(sample, learn_angle)
+__label__python y_pred = nn(Variable(x))
+__label__python y_pred = nn(x)
+__label__python y_pred = y_pred[0]

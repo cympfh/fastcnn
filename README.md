@@ -1,32 +1,40 @@
 # fastcnn
 
-`fastcnn` is another text classification tool (inspired by `fasttext`).
+`fastcnn` is another text classification CLI tool (inspired by `fasttext`).
 
-- using char-level CNN to classify
-- not yet `fast`
-- implemented with `tensorflow.keras`
+- Char-level CNN to classify
+    - supports binary/multi-class/multi-label classification
+- Command line tool (you don't need to write Python)
+- Not yet `fast`
+- Implemented with `tensorflow.keras`
 
-## Usage
+## Build, Install
 
 We prepare `Dockerfile` and `bin/fastcnn`.
 I recommend this style rather than directly running.
 
-If you need `sudo` privilege to run docker, please use properly.
-
 ```bash
 make build  # build docker image
 export PATH=$PWD/bin:$PATH  # add ./bin/fastcnn
+```
 
-fastcnn --help
+If you need `sudo` privilege to run docker, please use properly.
 
+## Usage
+
+### Supervised training
+
+The task type (binary, multi-class or multi-labels classification) are automatically detected. Some parameters also are adjusted.
+
+```bash
 # sample: binary classification
-fastcnn supervised \
+$ fastcnn supervised \
     ./samples/en_ja/input \
     --validate ./samples/en_ja/validate \
     --maxlen 20 --epochs 10 --lr 0.2
 
 # sample: categorical (3 classes) classification
-fastcnn supervised \
+$ fastcnn supervised \
     ./samples/python_bash_coq/train \
     --validate ./samples/python_bash_coq/valid \
     --epochs 300 \
@@ -35,3 +43,46 @@ fastcnn supervised \
     --lr 0.3
 ```
 
+`fastcnn supervised` generates `{out}.h5` and `{out}.meta.yml` as a model file.
+`{out}` is `"out"` in default (this can be specified by `-o`).
+
+### test and predict
+
+`fastcnn test` tests the model.
+`fastcnn predict` shows the prediction.
+
+```bash
+$ fastcnn test out ./samples/python_bash_coq/test
+Acc@1: 0.8883
+__label__bash
+- Recall: 0.9103
+- Prec: 0.9595
+- F1: 0.9342
+__label__coq
+- Recall: 0.7045
+- Prec: 1.0000
+- F1: 0.8267
+__label__python
+- Recall: 1.0000
+- Prec: 0.7703
+- F1: 0.8702
+
+$ fastcnn predict out ./samples/python_bash_coq/test --show-data | head
+__label__bash - discriminate.
+__label__coq - done.
+__label__coq - exact.
+__label__python Example trans_eq_example :
+__label__python From mathcomp Require Import all_ssreflect.
+__label__python Import ListNotations.
+__label__coq Proof.
+__label__coq Qed.
+__label__python Require Import Arith List Omega ZArith.
+__label__coq S n = S m -> n = m.
+```
+
+### more detail
+
+```bash
+fastcnn --help
+fastcnn [subcommand] --help
+```
