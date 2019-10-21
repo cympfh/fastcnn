@@ -226,6 +226,8 @@ def test(
                 n_acc += 1
             for y_pred in preds:
                 for y_true in truth:
+                    if y_true is None:
+                        continue
                     confusion_matrix[y_true][y_pred] += 1
 
         print(f"Acc@{k}: {n_acc / n_sum:.4f}")
