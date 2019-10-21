@@ -1,4 +1,4 @@
-TAG=fastcnn
+TAG=fastcnn:cpu
 
 build:
 	docker build -t $(TAG) .

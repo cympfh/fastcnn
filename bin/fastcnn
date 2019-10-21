@@ -1,11 +1,3 @@
 #!/bin/bash
 
-gpu-device() {
-    if which empty-gpu-device >/dev/null; then
-        empty-gpu-device
-    else
-        echo 0
-    fi
-}
-
-docker run --gpus \"device=$(gpu-device)\" -v ${PWD}:/workdir --rm fastcnn python /app/main.py $@
+docker run -v ${PWD}:/workdir --rm fastcnn:cpu python /app/main.py $@
