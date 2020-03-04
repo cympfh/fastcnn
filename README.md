@@ -43,13 +43,14 @@ $ fastcnn supervised \
     --lr 0.3
 ```
 
-`fastcnn supervised` generates `{out}.h5` and `{out}.meta.yml` as a model file.
-`{out}` is `"out"` in default (this can be specified by `-o`).
+After `fastcnn supervised`,
+model parameter file `{out}.h5` and a meta info file `{out}.meta.yml` are generated.
+Here, `{out}` is `"out"` by default (You can specify with `-o`).
 
 ### test and predict
 
-`fastcnn test` tests the model.
-`fastcnn predict` shows the prediction.
+You can test the trained model by `fastcnn test`.
+And `fastcnn predict` shows the prediction.
 
 ```bash
 $ fastcnn test out ./samples/python_bash_coq/test
