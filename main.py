@@ -1,9 +1,9 @@
-from typing import Optional
+from typing import List, Optional
 
 import click
 import cowsay
 import numpy
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import Callback, EarlyStopping
 from tensorflow.keras.models import Model
 
 from core import utils
@@ -125,7 +125,7 @@ Task: {dataset.task.name}, #labels={len(dataset.labels)}, #chars={len(dataset.ch
     optimizer = make_optimizer(opt, lr, clip_norm)
     model = make_model(dataset, dim, maxlen, kernel_size, optimizer, verbose=verbose)
 
-    callbacks = []
+    callbacks: List[Callback] = []
     if validate and stop_window > 0:
         callbacks += [EarlyStopping(monitor='val_acc', patience=stop_window)]
 
