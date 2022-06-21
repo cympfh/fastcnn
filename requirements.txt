@@ -1,7 +1,7 @@
 tensorflow-gpu==1.15.2
 Click==7.0
 hyperas==0.4.1
-numpy==1.16.4
+numpy==1.22.0
 cowsay==2.0.3
 
 freezegun==0.3.12
